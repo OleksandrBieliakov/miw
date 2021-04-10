@@ -37,6 +37,10 @@ class LogisticRegressionGD(object):
     def predict(self, x):
         return np.where(self.net_input(x) >= 0.0, 1, 0)
 
+    def probability(self, x):
+        net_input = self.net_input(x)
+        return self.activation(net_input)
+
 
 
 def get_data():
@@ -81,6 +85,20 @@ def classify(reglogs, test_data):
     return predictions
 
 
+def classify_by_highest_probability(reglogs, test_data):
+    predictions = []
+    for sample in test_data:
+        highest_probability = 0.
+        highest_probability_class = None
+        for reglog in reglogs:
+            p = reglog.probability(sample)
+            if p >= highest_probability:
+                highest_probability = p
+                highest_probability_class = reglog.class_value
+        predictions.append(highest_probability_class)
+    return predictions
+
+
 def plot(data, classes):
     my_plot(x=data, y=classes)
     plt.xlabel(r'$x_1$')
@@ -89,12 +107,27 @@ def plot(data, classes):
     plt.show()
 
 
+def print_probabilities(data, classes, reglogs, predictions, predictions_by_highest_probability):
+    for sample, classes_value, predicted_value, predicted_value2 in zip(data, classes, predictions, predictions_by_highest_probability):
+        sample_probabilites = {}
+        probabilities_sum = 0
+        for reglog in reglogs:
+            p = reglog.probability(sample)
+            probabilities_sum += p
+            p = round(p, 2)
+            sample_probabilites[reglog.class_value] = p
+        print(sample, classes_value, predicted_value, predicted_value2, sample_probabilites, round(probabilities_sum, 2))
+
+
 def test():
     train_data, test_data, train_data_classes, test_data_classes = get_data()
     reglogs = train_reglogs(train_data, train_data_classes)
     predictions = classify(reglogs, test_data)
+    predictions_by_highest_probability = classify_by_highest_probability(reglogs, test_data)
     plot(test_data, test_data_classes)
     plot(test_data, predictions)
+    plot(test_data, predictions_by_highest_probability)
+    print_probabilities(test_data, test_data_classes, reglogs, predictions, predictions_by_highest_probability)
 
 
 def main():
