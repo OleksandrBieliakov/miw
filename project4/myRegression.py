@@ -21,11 +21,11 @@ c3 = np.hstack([np.cbrt(x), np.ones(x.shape)])
 v = np.linalg.pinv(c) @ y
 v3 = np.linalg.pinv(c3) @ y
 
-e = sum((y - (v[0] * x + v[1])) ** 2)
-e3 = sum((y - (v3[0] * np.cbrt(x) + v3[1])) ** 2)
+e = sum((y - (v[0] * x + v[1])) ** 2)/len(y)
+e3 = sum((y - (v3[0] * np.cbrt(x) + v3[1])) ** 2)/len(y)
 
-e_test = sum((y_test - (v[0] * x_test + v[1])) ** 2)
-e3_test = sum((y_test - (v3[0] * np.cbrt(x_test) + v3[1])) ** 2)
+e_test = sum((y_test - (v[0] * x_test + v[1])) ** 2)/len(y_test)
+e3_test = sum((y_test - (v3[0] * np.cbrt(x_test) + v3[1])) ** 2)/len(y_test)
 
 print('TRAINING SET ERROR:', 'linear -', e, 'cubic root -', e3)
 print('TESTING SET ERROR:', 'linear -', e_test, 'cubic root -', e3_test)
