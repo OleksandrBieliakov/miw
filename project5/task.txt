@@ -1,0 +1,1 @@
+Translate matlab code to Python - backpropagation algorithm based on matrix - - files: siec.sce, relu.sce, relu.m.
